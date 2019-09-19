@@ -24,12 +24,10 @@ public class searchRouteController {
     @GetMapping("/direct")
     public DirectBusRouteResponse isDirectBusRouteExist(@RequestParam("dep_sid") Long dep_sid,
                                                         @RequestParam("arr_sid") Long arr_sid) {
-        System.out.println("hello");
         System.out.println(dep_sid);
         System.out.println(arr_sid);
 
 //        readFromFile();
-
 //        writeToFile();
         return new DirectBusRouteResponse();
     }
