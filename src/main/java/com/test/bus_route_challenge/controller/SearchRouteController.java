@@ -17,9 +17,9 @@ import java.util.Random;
 public class SearchRouteController {
 
     /**
-     * Get all users list.
+     * Is direct bus route present for requested parameters.
      *
-     * @return the list
+     * @return the DirectBusRouteResponse json object
      */
     @GetMapping("/direct")
     public DirectBusRouteResponse isDirectBusRouteExist(@RequestParam("dep_sid") Long dep_sid,
