@@ -8,21 +8,56 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DataService {
 
     Logger logger = LoggerFactory.getLogger(DataService.class);
 
-    @Cacheable(value = "routeCache", key = "#cacheKey" )
+    public boolean getDirectBusRoute(String dep_sid, String arr_sid) {
+
+        long start = System.currentTimeMillis();
+        String cacheKey = dep_sid + arr_sid;
+
+        HashMap<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = getBusRoutesData(cacheKey);
+
+        long end = System.currentTimeMillis();
+        logger.info("Preparing data for search time, s: " + (end - start) / 1000.0);
+
+        return isDirectBusRouteExist(stationIdStationInfoMap, dep_sid, arr_sid);
+    }
+
+    private boolean isDirectBusRouteExist(HashMap<String, List<HashMap<String, Integer>>> stationIdStationInfoMap,
+                                          String dep_sid, String arr_sid) {
+        long start = System.currentTimeMillis();
+        List<HashMap<String, Integer>> depStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, dep_sid);
+        List<HashMap<String, Integer>> arrStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, arr_sid);
+
+        boolean direct_bus_route_exist = depStationRouteInfoList.stream().flatMap(depInfo -> depInfo.entrySet().stream())
+                .anyMatch(depE ->
+                        arrStationRouteInfoList.stream().flatMap(arrInfo -> arrInfo.entrySet().stream())
+                                .anyMatch(arrE -> depE.getKey().equals(arrE.getKey()) && depE.getValue() < arrE.getValue())
+                );
+
+        long end = System.currentTimeMillis();
+        logger.info("depStationRouteInfoList size: " + depStationRouteInfoList.size() +
+                ", arrStationRouteInfoList size:" + arrStationRouteInfoList.size());
+        logger.info("Search route time, s: " + (end - start) / 1000.0);
+
+        return direct_bus_route_exist;
+    }
+
+    private List<HashMap<String, Integer>> getInfoListByStaionId(
+            HashMap<String, List<HashMap<String, Integer>>> stationIdStationInfoMap, String sid) {
+        return Optional.ofNullable(stationIdStationInfoMap.get(sid)).orElse(new ArrayList<>());
+    }
+
+    @Cacheable(value = "routeCache", key = "#cacheKey")
     public HashMap<String, List<HashMap<String, Integer>>> getBusRoutesData(String cacheKey) {
-        logger.warn("no cache used");
         HashMap<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = new HashMap<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(new File("C:\\Sviat/testout50000.txt")))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("C:\\Sviat/testout10000.txt")))) {
             String routeCount = br.readLine();
             String st;
             while ((st = br.readLine()) != null) {
@@ -46,8 +81,9 @@ public class DataService {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
+        logger.warn("no cache used");
         return stationIdStationInfoMap;
     }
 }
