@@ -1,0 +1,14 @@
+<ehcache>
+    <diskStore path="java.io.tmpdir" />
+
+    <defaultCache maxElementsInMemory="2000"
+                  eternal="true"
+                  overflowToDisk="false"
+                  timeToLiveSeconds="1200" />
+
+    <cache name="routeCache"
+           maxElementsInMemory="2000000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToLiveSeconds="10800000" />
+</ehcache>
