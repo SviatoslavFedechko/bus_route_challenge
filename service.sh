@@ -4,13 +4,14 @@
 cd $(dirname $0)
 
 dev_build() {
+  # Do what you need to package your app, e.g. mvn package
   mvn clean install
   true
 }
 
 dev_run() {
   # Do what you need to run your app in the foreground
-  java -jar target/bus_route_challenge-0.0.1-SNAPSHOT.jar
+  java -jar target/busRouteChallenge-0.0.1-SNAPSHOT.jar
   sleep 600
 }
 

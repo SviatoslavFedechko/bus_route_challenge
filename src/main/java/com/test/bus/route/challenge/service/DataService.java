@@ -42,7 +42,7 @@ public class DataService {
         String dedArrArraySize = String.format("depStationRouteInfoList size: %s, arrStationRouteInfoList size: %s",
                 depStationRouteInfoList.size(), arrStationRouteInfoList.size());
         logger.info(dedArrArraySize);
-        String routeSearchTime = String.format("Search route time, s: %s", (end - start) / 1000.0);
+        String routeSearchTime = String.format("Searching direct route time, s: %s", (end - start) / 1000.0);
         logger.info(routeSearchTime);
 
         return directBusRouteExist;
