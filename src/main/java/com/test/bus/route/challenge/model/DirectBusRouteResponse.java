@@ -1,4 +1,4 @@
-package com.test.bus_route_challenge.model;
+package com.test.bus.route.challenge.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

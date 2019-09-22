@@ -1,4 +1,4 @@
-package com.test.bus_route_challenge.config;
+package com.test.bus.route.challenge.config;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.test.bus_route_challenge.Exceptions;
+package com.test.bus.route.challenge.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

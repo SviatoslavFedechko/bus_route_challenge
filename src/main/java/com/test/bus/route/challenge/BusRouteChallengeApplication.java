@@ -1,4 +1,4 @@
-package com.test.bus_route_challenge;
+package com.test.bus.route.challenge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
