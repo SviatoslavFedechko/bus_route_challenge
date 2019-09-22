@@ -1,7 +1,7 @@
 package com.test.bus.route.challenge.controller;
 
 import com.test.bus.route.challenge.exceptions.ValidationException;
-import com.test.bus.route.challenge.service.DataService;
+import com.test.bus.route.challenge.service.RouteService;
 import com.test.bus.route.challenge.validators.DepArrValidator;
 import com.test.bus.route.challenge.model.DirectBusRouteResponse;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ public class SearchRouteController {
 
     private Logger logger = LoggerFactory.getLogger(SearchRouteController.class);
 
-    @Autowired private DataService dataService;
+    @Autowired private RouteService dataService;
     @Autowired private DepArrValidator depArrValidator;
 
     /**

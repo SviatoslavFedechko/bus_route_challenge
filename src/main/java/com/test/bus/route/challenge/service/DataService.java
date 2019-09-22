@@ -5,55 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DataService {
 
-    private Logger logger = LoggerFactory.getLogger(DataService.class);
+    private Logger logger = LoggerFactory.getLogger(RouteService.class);
 
-    public boolean getDirectBusRoute(String depSid, String arrSid) {
-
-        long start = System.currentTimeMillis();
-        String cacheKey = depSid + arrSid;
-
-        Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = getBusRoutesData(cacheKey);
-
-        long end = System.currentTimeMillis();
-        String searchTime = String.format("Preparing data for search time, s: %s", String.valueOf((end - start) / 1000.0));
-        logger.info(searchTime);
-        return isDirectBusRouteExist(stationIdStationInfoMap, depSid, arrSid);
-    }
-
-    private boolean isDirectBusRouteExist(Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap,
-                                          String depSid, String arrSid) {
-        long start = System.currentTimeMillis();
-        List<HashMap<String, Integer>> depStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, depSid);
-        List<HashMap<String, Integer>> arrStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, arrSid);
-
-        boolean directBusRouteExist = depStationRouteInfoList.stream().flatMap(depInfo -> depInfo.entrySet().stream())
-                .anyMatch(depE ->
-                        arrStationRouteInfoList.stream().flatMap(arrInfo -> arrInfo.entrySet().stream())
-                                .anyMatch(arrE -> depE.getKey().equals(arrE.getKey()) && depE.getValue() < arrE.getValue())
-                );
-
-        long end = System.currentTimeMillis();
-        String dedArrArraySize = String.format("depStationRouteInfoList size: %s, arrStationRouteInfoList size: %s",
-                depStationRouteInfoList.size(), arrStationRouteInfoList.size());
-        logger.info(dedArrArraySize);
-        String routeSearchTime = String.format("Searching direct route time, s: %s", (end - start) / 1000.0);
-        logger.info(routeSearchTime);
-
-        return directBusRouteExist;
-    }
-
-    private List<HashMap<String, Integer>> getInfoListByStaionId(
-            Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap, String sid) {
-        return Optional.ofNullable(stationIdStationInfoMap.get(sid)).orElse(new ArrayList<>());
-    }
-
-    @Cacheable(value = "routeCache", key = "#cacheKey")
+    @Cacheable(cacheNames = "routeCache", key = "#cacheKey")
     public Map<String, List<HashMap<String, Integer>>> getBusRoutesData(String cacheKey) {
         Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
