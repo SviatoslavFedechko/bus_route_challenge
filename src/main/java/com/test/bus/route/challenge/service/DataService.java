@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class DataService {
 
-    private Logger logger = LoggerFactory.getLogger(RouteService.class);
+    private Logger logger = LoggerFactory.getLogger(DataService.class);
 
     @Cacheable(cacheNames = "routeCache", key = "#cacheKey")
     public Map<String, List<HashMap<String, Integer>>> getBusRoutesData(String cacheKey) {

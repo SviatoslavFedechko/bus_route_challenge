@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DepArrValidator {
 
-    public boolean isDepArrSidValid(String dep_sid, String arr_sid) {
-        return StringUtils.isNumeric(dep_sid) && StringUtils.isNumeric(arr_sid);
+    public boolean isDepArrSidValid(String depSid, String arrSid) {
+        return StringUtils.isNumeric(depSid) && StringUtils.isNumeric(arrSid);
     }
 }
