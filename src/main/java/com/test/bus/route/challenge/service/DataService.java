@@ -23,7 +23,7 @@ public class DataService {
 
         Map<Integer, Set<Integer>> stationIdRouteIdMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream("./data/testout100000.txt")))) {
+                new FileInputStream("./data/example.txt")))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] routeInfoArray = line.split(" ");

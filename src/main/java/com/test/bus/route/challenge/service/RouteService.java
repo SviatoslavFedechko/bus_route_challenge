@@ -27,7 +27,8 @@ public class RouteService {
         Set<Integer> arrRouteIdSet = getInfoListByStaionId(stationIdRouteIdMap, arrSid);
 
         Integer routeId = depRouteIdSet.stream().filter(depRouteId ->
-                        arrRouteIdSet.stream().anyMatch(arrRouteId -> depRouteId == arrRouteId)).findFirst().orElse(-1);
+                        arrRouteIdSet.stream().anyMatch(arrRouteId -> depRouteId.equals(arrRouteId)))
+                .findFirst().orElse(-1);
 
         long end = System.currentTimeMillis();
         String dedArrArraySize = String.format("depStationRouteInfoList size: %s, arrStationRouteInfoList size: %s",
