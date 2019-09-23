@@ -18,6 +18,7 @@ public class DataService {
 
     private Logger logger = LoggerFactory.getLogger(DataService.class);
 
+    // Proper way is to prepare cache before first call
     @Cacheable(cacheNames = "routeCache")
     public Map<String, List<HashMap<String, Integer>>> getBusRoutesData() {
         logger.warn("Bus routes is not cached. Structuring and caching bus routes data started...");
