@@ -4,45 +4,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataService {
 
     private Logger logger = LoggerFactory.getLogger(DataService.class);
 
-    // Proper way is to prepare cache before first call
     @Cacheable(cacheNames = "routeCache")
-    public Map<String, List<HashMap<String, Integer>>> getBusRoutesData() {
-        logger.warn("Bus routes is not cached. Structuring and caching bus routes data started...");
+    public Map<Integer, Set<Integer>> getBusRoutesData() {
+        logger.info("inside getBusRoutesData method");
+        long start = System.currentTimeMillis();
 
-        Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = new HashMap<>();
+        Map<Integer, Set<Integer>> stationIdRouteIdMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream("./data/example.txt")))) {
+                new FileInputStream("./data/testout100000.txt")))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] routeInfoArray = line.split(" ");
                 // routeInfoArray description: first value in array = route id, all next values are buss station ids
-                String routeId = routeInfoArray[0];
+                Integer routeId = StringUtils.isEmpty(routeInfoArray[0]) ? null : Integer.valueOf(routeInfoArray[0]);
                 for (int i = 1; i < routeInfoArray.length; i++) {
-                    String stationId = routeInfoArray[i];
-                    boolean stationInfoListIsNull = stationIdStationInfoMap.get(routeInfoArray[i]) == null;
-                    List stationInfoList = stationInfoListIsNull ? new ArrayList() : stationIdStationInfoMap.get(stationId);
+                    Integer stationId = Integer.valueOf(routeInfoArray[i]);
+                    boolean stationInfoListIsNull = stationIdRouteIdMap.get(Integer.valueOf(routeInfoArray[i])) == null;
+                    Set routeIdSet = stationInfoListIsNull ? new HashSet() : stationIdRouteIdMap.get(stationId);
 
-                    // routeIdStationIdIndexMap: consist route Id as a key and position index of station id in a route info array, as a value.
-                    HashMap<String, Integer> routeIdStationIdIndexMap = new HashMap<>();
-                    routeIdStationIdIndexMap.put(routeId, i);
-
-                    stationInfoList.add(routeIdStationIdIndexMap);
+                    routeIdSet.add(routeId);
                     if (stationInfoListIsNull) {
-                        stationIdStationInfoMap.put(stationId, stationInfoList);
+                        stationIdRouteIdMap.put(stationId, routeIdSet);
                     }
                 }
             }
@@ -50,6 +44,10 @@ public class DataService {
         } catch (Exception e) {
             logger.error("could not get Bus Routes Data", e);
         }
-        return stationIdStationInfoMap;
+        long end = System.currentTimeMillis();
+        String searchTimeMsg = String.format("getBusRoutesData method finished in %s seconds: ",
+                String.valueOf((end - start) / 1000.0));
+        logger.info(searchTimeMsg);
+        return stationIdRouteIdMap;
     }
 }

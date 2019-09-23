@@ -1,14 +1,16 @@
-<config
-        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-        xmlns='http://www.ehcache.org/v3'
-        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd"
+         updateCheck="true"
+         monitoring="autodetect"
+         dynamicConfig="true">
 
-    <cache alias="routeCache">
-        <value-type>java.util.HashMap</value-type>
-        <resources>
-            <heap unit="entries">1000000</heap>
-            <offheap unit="MB">5000</offheap>
-        </resources>
+    <cache name="routeCache"
+           maxElementsInMemory="100"
+           eternal="true"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
     </cache>
 
-</config>
+</ehcache>

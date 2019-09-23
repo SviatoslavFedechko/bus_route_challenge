@@ -15,44 +15,33 @@ public class RouteService {
     @Autowired
     private DataService dataService;
 
-    public boolean getDirectBusRoute(String depSid, String arrSid) {
-
-        long start = System.currentTimeMillis();
-
-        Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = dataService.getBusRoutesData();
-
-        long end = System.currentTimeMillis();
-        String searchTime = String.format("Structuring and caching data for search finished in %s seconds: ",
-                String.valueOf((end - start) / 1000.0));
-        logger.info(searchTime);
+    public boolean getDirectBusRoute(Integer depSid, Integer arrSid) {
+        Map<Integer, Set<Integer>> stationIdStationInfoMap = dataService.getBusRoutesData();
         return isDirectBusRouteExist(stationIdStationInfoMap, depSid, arrSid);
     }
 
-    private boolean isDirectBusRouteExist(Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap,
-                                          String depSid, String arrSid) {
+    public boolean isDirectBusRouteExist(Map<Integer, Set<Integer>> stationIdRouteIdMap,
+                                          Integer depSid, Integer arrSid) {
         long start = System.currentTimeMillis();
-        List<HashMap<String, Integer>> depStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, depSid);
-        List<HashMap<String, Integer>> arrStationRouteInfoList = getInfoListByStaionId(stationIdStationInfoMap, arrSid);
+        Set<Integer> depRouteIdSet = getInfoListByStaionId(stationIdRouteIdMap, depSid);
+        Set<Integer> arrRouteIdSet = getInfoListByStaionId(stationIdRouteIdMap, arrSid);
 
-        boolean directBusRouteExist = depStationRouteInfoList.stream().flatMap(depInfo -> depInfo.entrySet().stream())
-                .anyMatch(depE ->
-                        arrStationRouteInfoList.stream().flatMap(arrInfo -> arrInfo.entrySet().stream())
-                                .anyMatch(arrE -> depE.getKey().equals(arrE.getKey()) && depE.getValue() < arrE.getValue())
-                );
+        Integer routeId = depRouteIdSet.stream().filter(depRouteId ->
+                        arrRouteIdSet.stream().anyMatch(arrRouteId -> depRouteId == arrRouteId)).findFirst().orElse(-1);
 
         long end = System.currentTimeMillis();
         String dedArrArraySize = String.format("depStationRouteInfoList size: %s, arrStationRouteInfoList size: %s",
-                depStationRouteInfoList.size(), arrStationRouteInfoList.size());
+                depRouteIdSet.size(), arrRouteIdSet.size());
         logger.info(dedArrArraySize);
-        String routeSearchTime = String.format("Searching direct route time, s: %s", (end - start) / 1000.0);
+        String routeSearchTime = String.format("Direct route id is %s. Searching direct route time, s: %s",
+                routeId, (end - start) / 1000.0);
         logger.info(routeSearchTime);
 
-        return directBusRouteExist;
+        return routeId >= 0;
     }
 
-    private List<HashMap<String, Integer>> getInfoListByStaionId(
-            Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap, String sid) {
-        return Optional.ofNullable(stationIdStationInfoMap.get(sid)).orElse(new ArrayList<>());
+    private Set<Integer> getInfoListByStaionId(Map<Integer, Set<Integer>> stationIdStationInfoMap, Integer sid) {
+        return Optional.ofNullable(stationIdStationInfoMap.get(sid)).orElse(new HashSet<>());
     }
 
 

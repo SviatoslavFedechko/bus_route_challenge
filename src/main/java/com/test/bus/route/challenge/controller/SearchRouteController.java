@@ -24,8 +24,8 @@ public class SearchRouteController {
      * @return the DirectBusRouteResponse json object
      */
     @GetMapping("/direct")
-    public DirectBusRouteResponse getDirectBusRoute(@RequestParam("dep_sid") String dep_sid,
-                                                    @RequestParam("arr_sid") String arr_sid) {
+    public DirectBusRouteResponse getDirectBusRoute(@RequestParam("dep_sid") Integer dep_sid,
+                                                    @RequestParam("arr_sid") Integer arr_sid) {
 
         if (!depArrValidator.isDepArrSidValid(dep_sid, arr_sid)) {
             logger.error("departure or arrival sid is invalid");
@@ -33,7 +33,7 @@ public class SearchRouteController {
         }
 
         boolean direct_bus_route_exist = dataService.getDirectBusRoute(dep_sid, arr_sid);
-        return new DirectBusRouteResponse(Integer.valueOf(dep_sid), Integer.valueOf(arr_sid), direct_bus_route_exist);
+        return new DirectBusRouteResponse(dep_sid, arr_sid, direct_bus_route_exist);
     }
 
 }
