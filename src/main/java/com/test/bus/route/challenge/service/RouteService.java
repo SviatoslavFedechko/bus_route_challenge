@@ -18,12 +18,12 @@ public class RouteService {
     public boolean getDirectBusRoute(String depSid, String arrSid) {
 
         long start = System.currentTimeMillis();
-        String cacheKey = depSid + arrSid;
 
-        Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = dataService.getBusRoutesData(cacheKey);
+        Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = dataService.getBusRoutesData();
 
         long end = System.currentTimeMillis();
-        String searchTime = String.format("Preparing data for search time, s: %s", String.valueOf((end - start) / 1000.0));
+        String searchTime = String.format("Structuring and caching data for search finished in %s seconds: ",
+                String.valueOf((end - start) / 1000.0));
         logger.info(searchTime);
         return isDirectBusRouteExist(stationIdStationInfoMap, depSid, arrSid);
     }

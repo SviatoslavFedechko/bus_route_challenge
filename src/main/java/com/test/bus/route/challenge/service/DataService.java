@@ -18,8 +18,10 @@ public class DataService {
 
     private Logger logger = LoggerFactory.getLogger(DataService.class);
 
-    @Cacheable(cacheNames = "routeCache", key = "#cacheKey")
-    public Map<String, List<HashMap<String, Integer>>> getBusRoutesData(String cacheKey) {
+    @Cacheable(cacheNames = "routeCache")
+    public Map<String, List<HashMap<String, Integer>>> getBusRoutesData() {
+        logger.warn("Bus routes is not cached. Structuring and caching bus routes data started...");
+
         Map<String, List<HashMap<String, Integer>>> stationIdStationInfoMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 new FileInputStream("./data/example.txt")))) {
@@ -33,7 +35,7 @@ public class DataService {
                     boolean stationInfoListIsNull = stationIdStationInfoMap.get(routeInfoArray[i]) == null;
                     List stationInfoList = stationInfoListIsNull ? new ArrayList() : stationIdStationInfoMap.get(stationId);
 
-                    // routeIdStationIdIndexMap: consist route Id as a key and position index of station id in route info array as a value.
+                    // routeIdStationIdIndexMap: consist route Id as a key and position index of station id in a route info array, as a value.
                     HashMap<String, Integer> routeIdStationIdIndexMap = new HashMap<>();
                     routeIdStationIdIndexMap.put(routeId, i);
 
@@ -47,7 +49,6 @@ public class DataService {
         } catch (Exception e) {
             logger.error("could not get Bus Routes Data", e);
         }
-        logger.warn("no cache used");
         return stationIdStationInfoMap;
     }
 }
