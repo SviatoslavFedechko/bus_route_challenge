@@ -26,18 +26,17 @@ public class CacheConfig {
         cacheManager.setCacheManager(ehCacheManagerFactoryBean().getObject());
         return cacheManager;
     }
+    @Bean
+    public RouteDataBootstrapCacheLoaderFactory getRouteDataBootstrapCacheLoaderFactory() {
+        return new RouteDataBootstrapCacheLoaderFactory();
+    }
 
     @Bean
     public EhCacheFactoryBean ehCacheFactory() {
         EhCacheFactoryBean ehCacheFactory = new EhCacheFactoryBean();
         ehCacheFactory.setCacheManager(ehCacheManagerFactoryBean().getObject());
-        ehCacheFactory.setBootstrapCacheLoader(myBootstrapCacheLoaderFactory());
+        ehCacheFactory.setBootstrapCacheLoader(getRouteDataBootstrapCacheLoaderFactory());
         return ehCacheFactory;
-    }
-
-    @Bean
-    public RouteDataBootstrapCacheLoaderFactory myBootstrapCacheLoaderFactory() {
-        return new RouteDataBootstrapCacheLoaderFactory();
     }
 
 }

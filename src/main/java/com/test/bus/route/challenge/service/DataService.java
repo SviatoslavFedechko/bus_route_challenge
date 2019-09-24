@@ -16,7 +16,7 @@ public class DataService {
 
     private Logger logger = LoggerFactory.getLogger(DataService.class);
 
-    @Cacheable(cacheNames = "routeCache")
+    @Cacheable(value = "routeCache")
     public Map<Integer, Set<Integer>> getBusRoutesData() {
         logger.info("inside getBusRoutesData method");
         long start = System.currentTimeMillis();

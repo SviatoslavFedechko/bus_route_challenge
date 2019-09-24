@@ -6,11 +6,13 @@
          dynamicConfig="true">
 
     <cache name="routeCache"
-           maxElementsInMemory="100"
+           maxElementsInMemory="1000000"
            eternal="true"
            overflowToDisk="false"
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
+        <bootstrapCacheLoaderFactory
+                class="com.test.bus.route.challenge.config.RouteDataBootstrapCacheLoaderFactory" properties="bootstrapAsynchronously=true"/>
     </cache>
 
 </ehcache>
