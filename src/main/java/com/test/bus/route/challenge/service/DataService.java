@@ -32,7 +32,7 @@ public class DataService {
                 for (int i = 1; i < routeInfoArray.length; i++) {
                     Integer stationId = Integer.valueOf(routeInfoArray[i]);
                     boolean stationInfoListIsNull = stationIdRouteIdMap.get(Integer.valueOf(routeInfoArray[i])) == null;
-                    Set routeIdSet = stationInfoListIsNull ? new HashSet() : stationIdRouteIdMap.get(stationId);
+                    Set<Integer> routeIdSet = stationInfoListIsNull ? new HashSet() : stationIdRouteIdMap.get(stationId);
 
                     routeIdSet.add(routeId);
                     if (stationInfoListIsNull) {
